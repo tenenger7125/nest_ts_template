@@ -3,9 +3,20 @@ import { NestFactory } from '@nestjs/core';
 
 import { AppModule } from '@/app.module';
 
-async function bootstrap() {
+const bootstrap = async () => {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalPipes(new ValidationPipe()); // dto 유효성 검사를 위해, 유효성 검사 파이프 연결
+
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
+
   await app.listen(3000);
-}
+};
+
 bootstrap();

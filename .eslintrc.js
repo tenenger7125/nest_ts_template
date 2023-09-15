@@ -4,7 +4,6 @@ module.exports = {
   plugins: ['@typescript-eslint/eslint-plugin'],
   extends: ['plugin:@typescript-eslint/recommended', 'plugin:prettier/recommended', 'plugin:import/recommended'],
   root: true,
-  ecmaFeatures: { classes: false },
   env: { node: true, jest: true },
   ignorePatterns: ['.eslintrc.js'],
   rules: {
@@ -30,7 +29,15 @@ module.exports = {
     'import/extensions': [
       'error',
       'never',
-      { svg: 'always', module: 'always', controller: 'always', service: 'always' },
+      {
+        svg: 'always',
+        module: 'always',
+        controller: 'always',
+        service: 'always',
+        pipe: 'always',
+        dto: 'always',
+        entity: 'always',
+      },
     ],
     'import/order': [
       'error',

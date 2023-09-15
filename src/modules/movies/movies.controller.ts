@@ -1,19 +1,11 @@
 // nest 입력하면, nest의 명령어를 보여준다.
 // nest g co를 입력하면 controller 양식을 생성해준다. + app.modules에 있는 controllers의 배열에 자동으로 추가된다.
 
-import {
-  Controller,
-  Param,
-  Body,
-  Get,
-  Post,
-  Delete,
-  Put,
-  Patch,
-} from '@nestjs/common';
+import { Controller, Param, Body, Get, Post, Delete, Put, Patch } from '@nestjs/common';
+
+import { addMovieDto } from './movies.dto';
 import { Movie } from './movies.entity';
 import { MoviesService } from './movies.service';
-import { addMovieDto } from './movies.dto';
 
 @Controller('movies') // 전체 url의 entry point이다. 접근시 /movies로 시작해야한다.
 export class MoviesController {
@@ -28,7 +20,7 @@ export class MoviesController {
 
   @Get(':id')
   getMovie(@Param('id') movieId: number) {
-    console.log(typeof movieId);
+    console.log(movieId, typeof movieId);
     return this.movieService.getMovie(movieId);
   }
   // Param 전체를 가져올 수 있다. 위의 코드가 더 가독성이 좋은거 같다.
