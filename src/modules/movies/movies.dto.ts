@@ -10,8 +10,8 @@
 
 // 유효성 검사를 위해 유효성 검사용 pipe를 연결해줘야한다.
 
-import { IsString } from 'class-validator';
 import { PartialType } from '@nestjs/mapped-types';
+import { IsString } from 'class-validator';
 
 export class addMovieDto {
   @IsString()

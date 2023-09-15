@@ -1,11 +1,11 @@
 // nest g s => 로 서비스 양식을 만들어준다!
 
 import { Injectable } from '@nestjs/common';
-import { Movie } from './movies.entity';
-import { addMovieDto } from './movies.dto';
 
-const generateMovieId = (movies: Movie[]) =>
-  Math.max(...movies.map((movie) => movie.id), 0) + 1;
+import { addMovieDto } from './movies.dto';
+import { Movie } from './movies.entity';
+
+const generateMovieId = (movies: Movie[]) => Math.max(...movies.map((movie) => movie.id), 0) + 1;
 
 @Injectable()
 export class MoviesService {
@@ -35,9 +35,7 @@ export class MoviesService {
     let updatedMovie; // 타입 생각
 
     this.movies = this.movies.map((movie) =>
-      movie.id === movieId
-        ? (updatedMovie = { ...movie, ...movieData })
-        : movie,
+      movie.id === movieId ? (updatedMovie = { ...movie, ...movieData }) : movie,
     );
 
     return updatedMovie;
@@ -47,9 +45,7 @@ export class MoviesService {
     let deletedMovie;
 
     // id가 같으면 filter에서 true, id가 다르면 false
-    this.movies = this.movies.filter((movie) =>
-      movie.id === movieId ? (deletedMovie = movie) : false,
-    );
+    this.movies = this.movies.filter((movie) => (movie.id === movieId ? (deletedMovie = movie) : false));
 
     return deletedMovie;
   }

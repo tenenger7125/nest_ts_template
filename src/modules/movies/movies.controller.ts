@@ -3,9 +3,9 @@
 
 import { Controller, Param, Body, Get, Post, Delete, Put, Patch } from '@nestjs/common';
 
+import { MoviesService } from './movies.service';
 import { addMovieDto } from './movies.dto';
 import { Movie } from './movies.entity';
-import { MoviesService } from './movies.service';
 
 @Controller('movies') // 전체 url의 entry point이다. 접근시 /movies로 시작해야한다.
 export class MoviesController {
