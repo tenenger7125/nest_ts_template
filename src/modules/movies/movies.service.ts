@@ -2,6 +2,9 @@
 
 import { Injectable } from '@nestjs/common';
 
+import { ForbiddenException } from '@/exceptions/forbidden.exception';
+import { ErrorSchema } from '@/constants/errorSchema';
+
 import { addMovieDto } from './movies.dto';
 import { Movie } from './movies.entity';
 
@@ -16,7 +19,8 @@ export class MoviesService {
   ];
 
   getMovies(): Movie[] {
-    return this.movies;
+    throw new ForbiddenException(new ErrorSchema().UserNotFound);
+    // return this.movies;
   }
 
   getMovie(movieId: number): Movie | undefined {
