@@ -61,6 +61,11 @@ module.exports = {
           { pattern: '@/test/**', group: 'unknown', position: 'before' },
 
           { pattern: './**/*.module', group: 'sibling', position: 'before' },
+          { pattern: './**/*.controller', group: 'sibling', position: 'before' },
+          { pattern: './**/*.service', group: 'sibling', position: 'before' },
+          { pattern: './**/*.dto', group: 'sibling', position: 'before' },
+          { pattern: './**/*.entity', group: 'sibling', position: 'before' },
+          { pattern: './**/*.*', group: 'sibling', position: 'before' },
         ],
         distinctGroup: false,
         'newlines-between': 'always',
