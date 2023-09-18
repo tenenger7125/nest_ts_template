@@ -1,9 +1,7 @@
 import { HttpStatus, HttpException } from '@nestjs/common';
 
-import { ErrorSchema } from '@/constants/errorSchema';
-
 export class ForbiddenException extends HttpException {
-  constructor(errorCode: ErrorSchema) {
+  constructor(errorCode: string) {
     super(errorCode, HttpStatus.FORBIDDEN);
   }
 }

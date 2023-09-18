@@ -3,7 +3,7 @@
 import { Injectable } from '@nestjs/common';
 
 import { ForbiddenException } from '@/exceptions/forbidden.exception';
-import { ErrorSchema } from '@/constants/errorSchema';
+import { ERROR_CODES } from '@/constants/errorCodes';
 
 import { addMovieDto } from './movies.dto';
 import { Movie } from './movies.entity';
@@ -12,6 +12,7 @@ const generateMovieId = (movies: Movie[]) => Math.max(...movies.map((movie) => m
 
 @Injectable()
 export class MoviesService {
+  //* 목업 데이터
   private movies = [
     { id: 1, title: 'test1' },
     { id: 2, title: 'test2' },
@@ -19,7 +20,7 @@ export class MoviesService {
   ];
 
   getMovies(): Movie[] {
-    throw new ForbiddenException(new ErrorSchema().UserNotFound);
+    throw new ForbiddenException(ERROR_CODES.USER_NOT_FOUND);
     // return this.movies;
   }
 
