@@ -9,13 +9,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const res = ctx.getResponse<Response>();
     const req = ctx.getRequest<Request>();
     const status = exception.getStatus();
-    const { message } = exception;
 
-    // +예외가 발생하면, DB에 로그를 쌓고 싶다..!
+    //* 예외가 발생하면, DB에 로그를 쌓고 싶다..!
 
     res.status(status).json({
-      message,
-      statusCode: status,
+      message: exception.message,
+      error: exception.name,
+      status,
       timestamp: new Date().toISOString(),
       path: req.url,
     });

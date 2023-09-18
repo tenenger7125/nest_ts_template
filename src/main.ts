@@ -1,7 +1,8 @@
-import { ValidationPipe } from '@nestjs/common';
+// import { ValidationPipe } from '@nestjs/common';
 
 import { NestFactory } from '@nestjs/core';
 
+import { ValidationPipe } from '@/pipes/Validation.pipe';
 import { HttpExceptionFilter } from '@/filters/httpExceptionFilter.filter';
 
 import { AppModule } from './app.module';
@@ -16,6 +17,7 @@ const bootstrap = async () => {
       transformOptions: {
         enableImplicitConversion: true,
       },
+      stopAtFirstError: true,
     }),
   );
 

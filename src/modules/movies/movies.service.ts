@@ -2,10 +2,14 @@
 
 import { Injectable } from '@nestjs/common';
 
-import { ForbiddenException } from '@/exceptions/forbidden.exception';
-import { ERROR_CODES } from '@/constants/errorCodes';
+import {
+  MovieGetFailedException,
+  MovieAddFailedException,
+  MovieUpdateFailedException,
+  MovieDeleteFailedException,
+} from '@/exceptions/movie.exception';
 
-import { addMovieDto } from './movies.dto';
+import { UpdateMovieDto, addMovieDto } from './movies.dto';
 import { Movie } from './movies.entity';
 
 const generateMovieId = (movies: Movie[]) => Math.max(...movies.map((movie) => movie.id), 0) + 1;
@@ -20,37 +24,51 @@ export class MoviesService {
   ];
 
   getMovies(): Movie[] {
-    throw new ForbiddenException(ERROR_CODES.USER_NOT_FOUND);
-    // return this.movies;
+    const movies = this.movies;
+    // throw new MovieGetFailedException();
+    if (!movies) throw new MovieGetFailedException();
+
+    return movies;
   }
 
   getMovie(movieId: number): Movie | undefined {
-    return this.movies.find((movie) => movie.id === movieId);
+    const movie = this.movies.find((movie) => movie.id === movieId);
+    // throw new MovieGetFailedException();
+    if (!movie) throw new MovieGetFailedException();
+
+    return movie;
   }
 
   addMovie(movieData: addMovieDto): Movie {
     const newMovie = { id: generateMovieId(this.movies), ...movieData };
-
-    this.movies = [...this.movies, newMovie];
+    // throw new MovieAddFailedException();
+    try {
+      this.movies = [...this.movies, newMovie];
+    } catch (err) {
+      throw new MovieAddFailedException();
+    }
 
     return newMovie;
   }
 
-  updateMovie(movieId: number, movieData: Partial<Movie>): Movie | undefined {
-    let updatedMovie; // 타입 생각
-
+  updateMovie(movieId: number, movieData: UpdateMovieDto): Movie | undefined {
+    let updatedMovie;
+    // throw new MovieUpdateFailedException();
     this.movies = this.movies.map((movie) =>
       movie.id === movieId ? (updatedMovie = { ...movie, ...movieData }) : movie,
     );
+
+    if (!updatedMovie) throw new MovieUpdateFailedException();
 
     return updatedMovie;
   }
 
   deleteMovie(movieId: number): Movie | undefined {
     let deletedMovie;
-
-    // id가 같으면 filter에서 true, id가 다르면 false
+    // throw new MovieDeleteFailedException();
     this.movies = this.movies.filter((movie) => (movie.id === movieId ? (deletedMovie = movie) : false));
+
+    if (!deletedMovie) throw new MovieDeleteFailedException();
 
     return deletedMovie;
   }
