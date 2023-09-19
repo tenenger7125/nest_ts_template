@@ -32,6 +32,7 @@ module.exports = {
         middleware: 'always',
         filter: 'always',
         exception: 'always',
+        guard: 'always',
       },
     ],
 
