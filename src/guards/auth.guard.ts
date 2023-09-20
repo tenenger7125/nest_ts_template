@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 export class AuthGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest<Request>();
-    const { access_token = '' } = req.cookies;
+    const access_token = req.cookies?.access_token ?? '';
 
     return this.authorization(access_token);
   }
