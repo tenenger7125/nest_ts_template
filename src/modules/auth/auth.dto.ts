@@ -1,4 +1,4 @@
-import { IsEmail, IsNotEmpty, IsString, Matches, MaxLength, MinLength } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsNumber, IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
 export class SignInDto {
   @IsString()
@@ -37,4 +37,15 @@ export class TokenDto {
 
   @IsString()
   refreshToken: string;
+}
+
+export class TokenInformationDto {
+  @IsString()
+  email: string;
+
+  @IsNumber()
+  iat: number;
+
+  @IsNumber()
+  exp: number;
 }

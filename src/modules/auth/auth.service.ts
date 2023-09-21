@@ -7,7 +7,7 @@ import { Response } from 'express';
 
 import { UserService } from '@/modules/user/user.service';
 
-import { SignInDto, SignUpDto, TokenDto } from './auth.dto';
+import { SignInDto, SignUpDto, TokenDto, TokenInformationDto } from './auth.dto';
 
 const encoding = (contents: string) => {
   const salt = bcrypt.genSaltSync(10);
@@ -17,6 +17,11 @@ const encoding = (contents: string) => {
 };
 
 const isEquals = (contents: string, hash: string) => bcrypt.compareSync(contents, hash);
+
+const isExpire = (exp: number) => {
+  const now = new Date().getTime();
+  return +exp.toString().padEnd(now.toString().length, '0') < now;
+};
 
 @Injectable()
 export class AuthService {
@@ -62,21 +67,13 @@ export class AuthService {
 
   async authorization(tokenDto: TokenDto) {
     const { accessToken, refreshToken } = tokenDto;
-    console.log(accessToken, refreshToken);
-    //^ 1. cookie에 access_token 확인(email 확인)
-    const { email, role } = { email: 'test@test.com', role: 'admin' };
-    console.log(email, role);
 
-    //^ db에서 email과 매칭되는 유저 가져오기(use typeorm)
-    const user = await this.userService.getUser(email);
+    const isValidateAccessToken = await this.validateAccessToken(accessToken);
 
-    //~ 만약 매칭되는 유저가 없으면 에러 throw
-    if (!user) throw new Error('등록되지 않은 사용자입니다.');
-
-    //^ 1-1. access_token 만료 확인
-    //^ 1-2. access_token 디코딩
-    //^ 1-2-1. access_token 인증된 서명인지 확인
-    //^ 1-2-2. access_token 로그인 + refresh_token 발급 => return true
+    if (isValidateAccessToken) {
+      //^ 1-2-2. access_token 로그인 + refresh_token 발급 => return true
+      return true;
+    }
 
     //^ 2. cookie에 refresh_token 확인
     //^ 2-1. refresh_token 만료 확인
@@ -98,5 +95,25 @@ export class AuthService {
     const token = this.jwtService.sign({ email }, { secret, expiresIn: expiresTime });
 
     res.cookie(`${tokenType}Token`, token, { maxAge: expiresTime, httpOnly: true });
+  }
+
+  async validateAccessToken(accessToken: string) {
+    //^ 1-2. access_token 디코딩
+    //^ 1-2-1. access_token 인증된 서명인지 확인
+    //~ 서명이 잘못된 토큰이라면 jwtService에서 throw 해준다.
+    const { email, exp } = this.jwtService.verify<TokenInformationDto>(accessToken, {
+      secret: this.configService.get(`JWT_ACCESS_TOKEN_SECRET`),
+    });
+
+    //^ 1-1. access_token 만료 확인
+    if (isExpire(exp)) throw new Error('토큰이 만료되었습니다.'); //! exception에서 가져오기
+
+    //^ 1. cookie에 access_token 확인(email 확인)
+    //^ db에서 email과 매칭되는 유저 가져오기(use typeorm)
+    const user = await this.userService.getUser(email);
+    //~ 만약 매칭되는 유저가 없으면 에러 throw
+    if (!user) throw new Error('등록되지 않은 사용자입니다.'); //! exception에서 가져오기
+
+    return true;
   }
 }
