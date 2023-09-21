@@ -18,13 +18,10 @@ export class UserService {
   }
 
   async getUsers() {
-    const users = await this.userRepository.find();
-    console.log('users: ', users);
-    return users;
+    return await this.userRepository.find();
   }
 
   async addUser(addUserDto: AddUserDto) {
-    const result = await this.userRepository.insert(addUserDto);
-    return result;
+    return await this.userRepository.insert(addUserDto);
   }
 }

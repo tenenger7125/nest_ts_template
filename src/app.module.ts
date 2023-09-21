@@ -1,13 +1,14 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 
 import { AuthModule } from '@/modules/auth/auth.module';
-import { ConfigModule } from '@/modules/config/config.module';
 import { DatabaseModule } from '@/modules/database/database.module';
 import { MoviesModule } from '@/modules/movies/movies.module';
 import { UserModule } from '@/modules/user/user.module';
 import { LoggerMiddleware } from '@/middleware/logger.middleware';
 import { AppController } from '@/controllers/app.controller';
 import { AppService } from '@/services/app.service';
+
+import { ConfigModule } from '@/config/config.module';
 
 @Module({
   imports: [ConfigModule, DatabaseModule, AuthModule, MoviesModule, UserModule], // 사용할 모듈을 작성해준다.

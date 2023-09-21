@@ -30,3 +30,11 @@ export class SignUpDto {
   @Matches(/[ㄱ-힣]{2,}/)
   name: string;
 }
+
+export class TokenDto {
+  @IsString()
+  accessToken: string;
+
+  @IsString()
+  refreshToken: string;
+}

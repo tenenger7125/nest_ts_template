@@ -7,7 +7,7 @@ import { ConfigModule as NestConfigModule } from '@nestjs/config';
     NestConfigModule.forRoot({
       cache: true,
       isGlobal: true,
-      envFilePath: `.env.${process.env.NODE_ENV}`, // npm run start:dev => .env.dev 파일 load / npm run start:prod => .env.prod 파일 load
+      envFilePath: ['.env', `.env.${process.env.NODE_ENV}`], // npm run start:dev => .env.dev 파일 load / npm run start:prod => .env.prod 파일 load
     }),
   ],
 })

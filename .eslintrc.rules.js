@@ -33,13 +33,14 @@ module.exports = {
         filter: 'always',
         exception: 'always',
         guard: 'always',
+        strategy: 'always',
       },
     ],
 
     'import/order': [
       'error',
       {
-        groups: ['builtin', 'external', 'unknown', 'internal', ['parent', 'sibling', 'index'], 'object', 'type'],
+        groups: ['builtin', 'external', 'internal', 'unknown', ['parent', 'sibling', 'index'], 'object', 'type'],
         pathGroups: [
           { pattern: '@nestjs/common', group: 'builtin', position: 'after' },
 
