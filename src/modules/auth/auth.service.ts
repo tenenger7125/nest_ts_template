@@ -13,7 +13,7 @@ const encoding = (contents: string) => {
   return hash;
 };
 
-const isDifferences = (contents: string, hash: string) => bcrypt.compareSync(contents, hash);
+const isEquals = (contents: string, hash: string) => bcrypt.compareSync(contents, hash);
 
 @Injectable()
 export class AuthService {
@@ -28,9 +28,9 @@ export class AuthService {
     if (!user) throw new Error('등록되지 않은 사용자입니다.');
 
     //^ signInDto의 password와, 유저의 암호화된 비밀번호를 복호화하여, 비교
-    const isDiff = isDifferences(password, encoding(password));
+    const isEqual = isEquals(password, encoding(password));
     //~ 만약 비밀번호가 다르면 에러 throw
-    if (isDiff) throw new Error('비밀번호가 다릅니다.'); //! exception에서 가져오기
+    if (!isEqual) throw new Error('비밀번호가 다릅니다.'); //! exception에서 가져오기
 
     //^ jwt 생성(access_token, refresh_token)
     //~ jwt 생성 후 header에 쿠키 추가

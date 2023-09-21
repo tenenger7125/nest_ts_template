@@ -1,39 +1,20 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 
-import { TypeOrmModule } from '@nestjs/typeorm';
-
 import { AuthModule } from '@/modules/auth/auth.module';
+import { ConfigModule } from '@/modules/config/config.module';
+import { DatabaseModule } from '@/modules/database/database.module';
 import { MoviesModule } from '@/modules/movies/movies.module';
-import { User } from '@/modules/user/user.entity';
 import { UserModule } from '@/modules/user/user.module';
 import { LoggerMiddleware } from '@/middleware/logger.middleware';
 import { AppController } from '@/controllers/app.controller';
 import { AppService } from '@/services/app.service';
 
 @Module({
-  imports: [
-    AuthModule,
-    MoviesModule,
-    UserModule,
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: '1234',
-      database: 'postgres',
-      entities: [User],
-      synchronize: true, // production에서는 true로 하면 데이터 손실 위험이 있다.
-      retryAttempts: 3,
-      logging: true,
-    }),
-  ], // 사용할 모듈을 작성해준다.
+  imports: [ConfigModule, DatabaseModule, AuthModule, MoviesModule, UserModule], // 사용할 모듈을 작성해준다.
   controllers: [AppController], // 사용할 컨트롤러를 작성해준다.
   providers: [AppService],
 })
 export class AppModule implements NestModule {
-  constructor() {}
-
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(LoggerMiddleware).forRoutes('*');
     // consumer.apply(LoggerMiddleware).forRoutes('*'); 전체 log를 찍고 싶을때 와일드카드를 사용한다.
