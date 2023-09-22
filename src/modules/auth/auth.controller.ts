@@ -11,12 +11,12 @@ import { SignInDto, SignUpDto } from './auth.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @UseGuards(AuthGuard)
   @Post('signin')
   async signIn(@Body() signInDto: SignInDto, @Res({ passthrough: true }) res: Response) {
     return await this.authService.signIn(signInDto, res);
   }
 
-  @UseGuards(AuthGuard)
   @Post('signup')
   signUp(@Body() signUpDto: SignUpDto) {
     return this.authService.signUp(signUpDto);

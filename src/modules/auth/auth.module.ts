@@ -1,15 +1,16 @@
-import { Module } from '@nestjs/common';
+import { Module, Global } from '@nestjs/common';
 
-import { JwtModule } from '@nestjs/jwt';
-
+import { TokenModule } from '@/modules/token/token.module';
 import { UserModule } from '@/modules/user/user.module';
 
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 
+@Global()
 @Module({
-  imports: [JwtModule.register({}), UserModule],
+  imports: [TokenModule, UserModule],
   controllers: [AuthController],
   providers: [AuthService],
+  exports: [AuthService],
 })
 export class AuthModule {}

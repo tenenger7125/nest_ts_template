@@ -1,19 +1,23 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 
+import { APP_GUARD } from '@nestjs/core';
+
 import { AuthModule } from '@/modules/auth/auth.module';
 import { DatabaseModule } from '@/modules/database/database.module';
 import { MoviesModule } from '@/modules/movies/movies.module';
+import { TokenModule } from '@/modules/token/token.module';
 import { UserModule } from '@/modules/user/user.module';
 import { LoggerMiddleware } from '@/middleware/logger.middleware';
 import { AppController } from '@/controllers/app.controller';
 import { AppService } from '@/services/app.service';
+import { AuthGuard } from '@/guards/auth.guard';
 
 import { ConfigModule } from '@/config/config.module';
 
 @Module({
-  imports: [ConfigModule, DatabaseModule, AuthModule, MoviesModule, UserModule], // 사용할 모듈을 작성해준다.
+  imports: [ConfigModule, DatabaseModule, AuthModule, MoviesModule, UserModule, TokenModule], // 사용할 모듈을 작성해준다.
   controllers: [AppController], // 사용할 컨트롤러를 작성해준다.
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: AuthGuard }],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
