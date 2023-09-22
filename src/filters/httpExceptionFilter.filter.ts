@@ -2,7 +2,7 @@ import { ArgumentsHost, Catch, ExceptionFilter, HttpException } from '@nestjs/co
 
 import { Request, Response } from 'express';
 
-@Catch(HttpException) // HttpException는 예외가 발생했을 때만 찾고 있음을 nest에게 알린다.
+@Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();

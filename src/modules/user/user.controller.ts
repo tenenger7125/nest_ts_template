@@ -11,7 +11,6 @@ export class UserController {
 
   @Get()
   async getUser(@Req() req: LocalsRequest) {
-    // decoded를 여기서 받아야한다...!
     const { email } = req.decoded;
 
     return await this.userService.getUser(email);

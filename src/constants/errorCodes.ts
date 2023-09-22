@@ -1,5 +1,3 @@
-// DB가 가지고 있어서 무결성을 갖는게 좋아 보일듯?
-
 export const ERROR_CODES = {
   VALIDATE_FAILED: 'validate failed',
   NOT_AUTHENTICATED: 'unauthenticated user',

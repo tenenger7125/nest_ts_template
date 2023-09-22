@@ -1,6 +1,3 @@
-// nest 입력하면, nest의 명령어를 보여준다.
-// nest g co를 입력하면 controller 양식을 생성해준다. + app.modules에 있는 controllers의 배열에 자동으로 추가된다.
-
 import { Controller, Param, Body, Get, Post, Delete, Put, Patch } from '@nestjs/common';
 
 import { MoviesService } from './movies.service';

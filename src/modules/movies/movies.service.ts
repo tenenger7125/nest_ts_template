@@ -25,7 +25,6 @@ export class MoviesService {
 
   getMovies(): Movie[] {
     const movies = this.movies;
-    // throw new MovieGetFailedException();
     if (!movies) throw new MovieGetFailedException();
 
     return movies;
@@ -33,7 +32,6 @@ export class MoviesService {
 
   getMovie(movieId: number): Movie | undefined {
     const movie = this.movies.find((movie) => movie.id === movieId);
-    // throw new MovieGetFailedException();
     if (!movie) throw new MovieGetFailedException();
 
     return movie;
@@ -41,7 +39,6 @@ export class MoviesService {
 
   addMovie(movieData: addMovieDto): Movie {
     const newMovie = { id: generateMovieId(this.movies), ...movieData };
-    // throw new MovieAddFailedException();
     try {
       this.movies = [...this.movies, newMovie];
     } catch (err) {
@@ -53,7 +50,6 @@ export class MoviesService {
 
   updateMovie(movieId: number, movieData: UpdateMovieDto): Movie | undefined {
     let updatedMovie;
-    // throw new MovieUpdateFailedException();
     this.movies = this.movies.map((movie) =>
       movie.id === movieId ? (updatedMovie = { ...movie, ...movieData }) : movie,
     );
@@ -65,7 +61,6 @@ export class MoviesService {
 
   deleteMovie(movieId: number): Movie | undefined {
     let deletedMovie;
-    // throw new MovieDeleteFailedException();
     this.movies = this.movies.filter((movie) => (movie.id === movieId ? (deletedMovie = movie) : false));
 
     if (!deletedMovie) throw new MovieDeleteFailedException();

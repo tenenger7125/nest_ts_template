@@ -101,10 +101,10 @@ export class TokenService {
   }
 
   deleteAccessToken(res: Response) {
-    res.cookie(this.ACCESS_TOKEN_CONFIG.KEY, '');
+    res.cookie(this.ACCESS_TOKEN_CONFIG.KEY, '', { ...this.COOKIE_DEFAULT_OPTIONS, maxAge: 0 });
   }
 
   deleteRefreshToken(res: Response) {
-    res.cookie(this.REFRESH_TOKEN_CONFIG.KEY, '');
+    res.cookie(this.REFRESH_TOKEN_CONFIG.KEY, '', { ...this.COOKIE_DEFAULT_OPTIONS, maxAge: 0 });
   }
 }
