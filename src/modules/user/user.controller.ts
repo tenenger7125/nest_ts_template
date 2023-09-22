@@ -1,6 +1,6 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Controller, Get, UseGuards, Req } from '@nestjs/common';
 
-import { AuthGuard } from '@/guards/auth.guard';
+import { AuthGuard, LocalsRequest } from '@/guards/auth.guard';
 
 import { UserService } from './user.service';
 
@@ -10,7 +10,10 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  async getUser() {
-    return await this.userService.getUser('test123@test.com');
+  async getUser(@Req() req: LocalsRequest) {
+    // decoded를 여기서 받아야한다...!
+    const { email } = req.decoded;
+
+    return await this.userService.getUser(email);
   }
 }

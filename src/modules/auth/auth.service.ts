@@ -44,7 +44,7 @@ export class AuthService {
     return newUser;
   }
 
-  async validate(res: Response, { accessToken, refreshToken }: TokenDto) {
+  validate(res: Response, { accessToken, refreshToken }: TokenDto) {
     return (
       this.tokenService.validateAccessToken(res, accessToken) ||
       this.tokenService.validateRefreshToken(res, refreshToken)
