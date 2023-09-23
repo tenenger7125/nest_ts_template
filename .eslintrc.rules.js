@@ -34,6 +34,7 @@ module.exports = {
         exception: 'always',
         guard: 'always',
         strategy: 'always',
+        decorator: 'always',
       },
     ],
 

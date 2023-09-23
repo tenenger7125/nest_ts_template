@@ -26,10 +26,13 @@ export class AuthService {
     const isEqual = this.tokenService.isEquals(password, user.password);
     if (!isEqual) throw new Error('비밀번호가 다릅니다.');
 
-    this.tokenService.addAccessToken(res, { email });
-    this.tokenService.addRefreshToken(res, { email });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { password: _, ...userInfo } = user;
 
-    return { success: true };
+    this.tokenService.addAccessToken(res, userInfo);
+    this.tokenService.addRefreshToken(res, userInfo);
+
+    return userInfo;
   }
 
   async signUp(signUpDto: SignUpDto) {
