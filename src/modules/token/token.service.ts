@@ -46,7 +46,7 @@ export class TokenService {
     return +exp.toString().padEnd(now.toString().length, '0') < now;
   }
 
-  decoding(token: string, res: Response, tokenType: 'access' | 'refresh') {
+  decoding(res: Response, token: string, tokenType: 'access' | 'refresh') {
     const upperTokenType = tokenType.toUpperCase() as Uppercase<typeof tokenType>;
 
     try {
@@ -66,16 +66,15 @@ export class TokenService {
   validateAccessToken(res: Response, accessToken: string) {
     if (!accessToken) return false;
 
-    const decoded = this.decoding(accessToken, res, 'access');
+    const decoded = this.decoding(res, accessToken, 'access');
     if (this.isExpire(decoded.exp)) throw new Error('액세스 토큰이 만료되었습니다.');
-
     return decoded;
   }
 
   validateRefreshToken(res: Response, refreshToken: string) {
     if (!refreshToken) throw new Error('리프레시 토큰이 없습니다.');
 
-    const decoded = this.decoding(refreshToken, res, 'refresh');
+    const decoded = this.decoding(res, refreshToken, 'refresh');
     if (this.isExpire(decoded.exp)) throw new Error('리프레시 토큰이 만료되었습니다.');
 
     this.addAccessToken(res, { email: decoded.email });

@@ -27,7 +27,7 @@ export class AuthGuard implements CanActivate {
 
     const role = this.reflector.get<string>(META_DATA_KEY.ROLE, context.getHandler());
 
-    if (role.includes('public')) return false; //! throw custom exception
+    if (role?.includes('public')) return true;
 
     //^ 역할 별 guard 추가 예정!
 

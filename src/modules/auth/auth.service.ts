@@ -17,7 +17,7 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
-  async signIn(signInDto: SignInDto, res: Response) {
+  async signIn(res: Response, signInDto: SignInDto) {
     const { email, password } = signInDto;
 
     const user = await this.userService.getUser(email);

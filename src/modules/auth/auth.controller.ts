@@ -14,7 +14,7 @@ export class AuthController {
   @Post('signin')
   @Public()
   async signIn(@Body() signInDto: SignInDto, @Res({ passthrough: true }) res: Response) {
-    return await this.authService.signIn(signInDto, res);
+    return await this.authService.signIn(res, signInDto);
   }
 
   @Post('signup')
