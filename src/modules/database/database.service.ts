@@ -3,8 +3,6 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions, TypeOrmOptionsFactory } from '@nestjs/typeorm';
 
-import { User } from '@/modules/user/user.entity';
-
 @Injectable()
 export class DatabaseService implements TypeOrmOptionsFactory {
   constructor(private readonly configService: ConfigService) {}
@@ -17,10 +15,10 @@ export class DatabaseService implements TypeOrmOptionsFactory {
       username: this.configService.get('DB_USERNAME'),
       password: this.configService.get('DB_PASSWORD'),
       database: this.configService.get('DB_DATABASE'),
-      entities: [User],
       synchronize: this.configService.get('DB_SYNCHRONIZE'), // dev: true / prod: false
+      autoLoadEntities: true,
       retryAttempts: 3,
-      logging: this.configService.get('DB_LOGGING'), // dev: true / prod: false
+      logging: Boolean(this.configService.get('DB_LOGGING')), // dev: true / prod: false
     };
   }
 }

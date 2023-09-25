@@ -14,7 +14,7 @@ export class UserService {
   ) {}
 
   async getUser(email: string) {
-    return await this.userRepository.findOne({ where: { email } });
+    return await this.userRepository.findOne({ where: { email }, relations: { movies: true } });
   }
 
   async getUsers() {

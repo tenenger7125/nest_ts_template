@@ -13,8 +13,10 @@ import { CookieInterceptor } from '@/interceptors/cookie.interceptor';
 
 import { ConfigModule } from '@/config/config.module';
 
+import { MoviesModule } from './modules/movies/movies.module';
+
 @Module({
-  imports: [ConfigModule, DatabaseModule, AuthModule, TokenModule],
+  imports: [ConfigModule, DatabaseModule, AuthModule, TokenModule, MoviesModule],
   controllers: [AppController],
   providers: [
     AppService,
