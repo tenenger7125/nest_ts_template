@@ -8,11 +8,6 @@ import { AuthService } from '@/modules/auth/auth.service';
 
 import { META_DATA_KEY } from '@/constants/metaDataKeys';
 
-import { TokenInformationDto } from '../modules/token/token.dto';
-export interface LocalsRequest extends Request {
-  decoded: TokenInformationDto;
-}
-
 @Injectable()
 export class AuthGuard implements CanActivate {
   constructor(
@@ -21,10 +16,11 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    const req = context.switchToHttp().getRequest<LocalsRequest>();
+    const req = context.switchToHttp().getRequest<Request>();
     const { accessToken = '', refreshToken = '' } = req.cookies;
 
     const role = this.reflector.get<string>(META_DATA_KEY.ROLE, context.getHandler());
+    console.log('authGuard Here!');
 
     if (role?.includes('public')) return true;
 

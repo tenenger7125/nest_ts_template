@@ -1,6 +1,6 @@
 import { Controller, Get, Req } from '@nestjs/common';
 
-import { LocalsRequest } from '@/guards/auth.guard';
+import { LocalsRequest } from '@/interceptors/cookie.interceptor';
 
 import { UserService } from './user.service';
 

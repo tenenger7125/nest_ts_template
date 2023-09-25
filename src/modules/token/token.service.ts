@@ -60,6 +60,29 @@ export class TokenService {
     }
   }
 
+  accessTokenDecoding(accessToken: string) {
+    try {
+      const decoded = this.jwtService.verify<TokenInformationDto>(accessToken, {
+        secret: this.ACCESS_TOKEN_CONFIG.SECRET,
+      });
+
+      return decoded;
+    } catch (err) {
+      throw new Error('인증된 서명이 아닙니다.');
+    }
+  }
+  refreshTokenDecoding(refreshToken: string) {
+    try {
+      const decoded = this.jwtService.verify<TokenInformationDto>(refreshToken, {
+        secret: this.REFRESH_TOKEN_CONFIG.SECRET,
+      });
+
+      return decoded;
+    } catch (err) {
+      throw new Error('인증된 서명이 아닙니다.');
+    }
+  }
+
   validateAccessToken(accessToken: string) {
     if (!accessToken) return false;
 

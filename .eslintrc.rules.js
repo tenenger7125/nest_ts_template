@@ -35,6 +35,7 @@ module.exports = {
         guard: 'always',
         strategy: 'always',
         decorator: 'always',
+        interceptor: 'always',
       },
     ],
 
