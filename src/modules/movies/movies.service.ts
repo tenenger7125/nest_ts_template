@@ -5,6 +5,8 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
+import { User } from '@/modules/user/user.entity';
+
 import { Movie } from './movies.entity';
 
 // const generateMovieId = (movies: Movie[]) => Math.max(...movies.map((movie) => movie.id), 0) + 1;
@@ -14,10 +16,19 @@ export class MoviesService {
   constructor(@InjectRepository(Movie) private movieRepository: Repository<Movie>) {}
   //* 목업 데이터
 
-  getMovies() {
-    const movies = this.movieRepository.find();
+  async getMovies() {
+    const userMovie = await this.movieRepository
+      .createQueryBuilder('movie')
+      .innerJoinAndSelect(User, 'user', 'movie.email = user.email')
+      .select(['movie.title as title', 'user.email as email', 'user.name as name'])
+      .where('movie.email = :email', { email: 'test@test.com' })
+      .getRawMany();
 
-    return movies;
+    if (userMovie.length === 0) throw new Error('일치하는 영화 데이터가 없습니다.');
+
+    // const movies = await this.movieRepository.find();
+
+    return userMovie;
   }
 
   // getMovie(movieId: number): Movie | undefined {
