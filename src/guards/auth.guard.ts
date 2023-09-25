@@ -30,6 +30,9 @@ export class AuthGuard implements CanActivate {
 
     //^ 역할 별 guard 추가 예정!
 
-    return this.authService.validate({ accessToken, refreshToken });
+    const isValid = this.authService.validate({ accessToken, refreshToken });
+    if (!isValid) throw new Error('권한이 없는 요청입니다.'); //! exception 추가하기
+
+    return true;
   }
 }
