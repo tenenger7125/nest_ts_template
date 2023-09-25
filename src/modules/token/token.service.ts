@@ -46,41 +46,36 @@ export class TokenService {
     return +exp.toString().padEnd(now.toString().length, '0') < now;
   }
 
-  decoding(res: Response, token: string, tokenType: 'access' | 'refresh') {
-    const upperTokenType = tokenType.toUpperCase() as Uppercase<typeof tokenType>;
+  decoding(key: 'access' | 'refresh', value: string) {
+    const upperKey = key.toUpperCase() as Uppercase<typeof key>;
 
     try {
-      const decoded = this.jwtService.verify<TokenInformationDto>(token, {
-        secret: this[`${upperTokenType}_TOKEN_CONFIG`].SECRET,
+      const decoded = this.jwtService.verify<TokenInformationDto>(value, {
+        secret: this[`${upperKey}_TOKEN_CONFIG`].SECRET,
       });
 
       return decoded;
     } catch (err) {
-      this.deleteAccessToken(res);
-      this.deleteRefreshToken(res);
-
       throw new Error('인증된 서명이 아닙니다.');
     }
   }
 
-  validateAccessToken(res: Response, accessToken: string) {
+  validateAccessToken(accessToken: string) {
     if (!accessToken) return false;
 
-    const decoded = this.decoding(res, accessToken, 'access');
-    if (this.isExpire(decoded.exp)) throw new Error('액세스 토큰이 만료되었습니다.');
-    return decoded;
+    const { exp } = this.decoding('access', accessToken);
+    if (this.isExpire(exp)) return false;
+
+    return true;
   }
 
-  validateRefreshToken(res: Response, refreshToken: string) {
-    if (!refreshToken) throw new Error('리프레시 토큰이 없습니다.');
+  validateRefreshToken(refreshToken: string) {
+    if (!refreshToken) return false;
 
-    const decoded = this.decoding(res, refreshToken, 'refresh');
-    if (this.isExpire(decoded.exp)) throw new Error('리프레시 토큰이 만료되었습니다.');
+    const { exp } = this.decoding('refresh', refreshToken);
+    if (this.isExpire(exp)) return false;
 
-    this.addAccessToken(res, { email: decoded.email });
-    this.addRefreshToken(res, { email: decoded.email });
-
-    return decoded;
+    return true;
   }
 
   addAccessToken(res: Response, value: object) {

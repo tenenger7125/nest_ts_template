@@ -17,6 +17,10 @@ export class AuthService {
     private readonly tokenService: TokenService,
   ) {}
 
+  validate({ accessToken, refreshToken }: TokenDto) {
+    return this.tokenService.validateAccessToken(accessToken) || this.tokenService.validateRefreshToken(refreshToken);
+  }
+
   async signIn(res: Response, signInDto: SignInDto) {
     const { email, password } = signInDto;
 
@@ -45,12 +49,5 @@ export class AuthService {
     await this.userService.addUser(newUser);
 
     return newUser;
-  }
-
-  validate(res: Response, { accessToken, refreshToken }: TokenDto) {
-    return (
-      this.tokenService.validateAccessToken(res, accessToken) ||
-      this.tokenService.validateRefreshToken(res, refreshToken)
-    );
   }
 }

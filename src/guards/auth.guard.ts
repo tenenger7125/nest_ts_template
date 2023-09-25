@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 
 import { Reflector } from '@nestjs/core';
-import { Request, Response } from 'express';
+import { Request } from 'express';
 import { Observable } from 'rxjs';
 
 import { AuthService } from '@/modules/auth/auth.service';
@@ -21,7 +21,6 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
-    const res = context.switchToHttp().getRequest<Response>();
     const req = context.switchToHttp().getRequest<LocalsRequest>();
     const { accessToken = '', refreshToken = '' } = req.cookies;
 
@@ -31,13 +30,6 @@ export class AuthGuard implements CanActivate {
 
     //^ 역할 별 guard 추가 예정!
 
-    try {
-      const decoded = this.authService.validate(res, { accessToken, refreshToken });
-      req.decoded = decoded;
-
-      return !!decoded;
-    } catch (err) {
-      throw new Error(err.message);
-    }
+    return this.authService.validate({ accessToken, refreshToken });
   }
 }
