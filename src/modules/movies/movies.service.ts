@@ -14,21 +14,18 @@ import { Movie } from './movies.entity';
 @Injectable()
 export class MoviesService {
   constructor(@InjectRepository(Movie) private movieRepository: Repository<Movie>) {}
-  //* 목업 데이터
 
   async getMovies() {
-    const userMovie = await this.movieRepository
-      .createQueryBuilder('movie')
-      .innerJoinAndSelect(User, 'user', 'movie.email = user.email')
-      .select(['movie.title as title', 'user.email as email', 'user.name as name'])
-      .where('movie.email = :email', { email: 'test@test.com' })
-      .getRawMany();
-
-    if (userMovie.length === 0) throw new Error('일치하는 영화 데이터가 없습니다.');
-
-    // const movies = await this.movieRepository.find();
-
-    return userMovie;
+    const movies = await this.movieRepository.find({ where: { email: 'test@test.com' }, relations: { user: true } });
+    // const movies = await this.movieRepository.find({ where: { email: 'test@test.com' }, relations: { user: true } });
+    // const test1 = await this.movieRepository
+    //   .createQueryBuilder('movie')
+    // .innerJoinAndSelect(User, 'user', 'user.email = movie.email')
+    //   .innerJoin(User, 'user', 'movie.email = user.email')
+    //   .select(['movie.id', 'user.email', 'user.name'])
+    //   .getMany();
+    // console.log(test1);
+    return movies;
   }
 
   // getMovie(movieId: number): Movie | undefined {

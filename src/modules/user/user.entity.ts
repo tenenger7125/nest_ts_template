@@ -1,4 +1,6 @@
-import { Entity, PrimaryColumn, Column } from 'typeorm';
+import { Entity, PrimaryColumn, Column, OneToMany, JoinColumn } from 'typeorm';
+
+import { Movie } from '../movies/movies.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -10,4 +12,7 @@ export class User {
 
   @Column()
   name: string;
+
+  @OneToMany(() => Movie, (movie) => movie.user)
+  movies: Movie[];
 }

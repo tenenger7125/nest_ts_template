@@ -14,8 +14,8 @@ export class UserService {
   ) {}
 
   async getUser(email: string) {
-    const user = await this.userRepository.findOne({ where: { email } });
-    if (!user) throw new Error('일치하는 유저가 없습니다.');
+    const user = await this.userRepository.findOne({ where: { email }, relations: { movies: true } });
+    if (!user) throw new Error('유저가 없습니다.');
 
     return user;
   }
