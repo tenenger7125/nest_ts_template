@@ -6,7 +6,6 @@ import { Repository } from 'typeorm';
 import {
   UserAddFailedException,
   UserDetailsGetFailedException,
-  UserGetFailedException,
   UsersGetFailedException,
 } from '@/exceptions/user.exception';
 
@@ -22,7 +21,6 @@ export class UserService {
 
   async getUser(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
-    if (!user) throw new UserGetFailedException();
 
     return user;
   }

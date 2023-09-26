@@ -5,7 +5,11 @@ import { Response } from 'express';
 import { TokenService } from '@/modules/token/token.service';
 import { UserService } from '@/modules/user/user.service';
 
-import { DuplicatedUserFoundException, PasswordMatchFailedException } from '@/exceptions/user.exception';
+import {
+  DuplicatedUserFoundException,
+  PasswordMatchFailedException,
+  UserGetFailedException,
+} from '@/exceptions/user.exception';
 
 import { SignInDto, SignUpDto, TokenDto } from './auth.dto';
 
@@ -26,8 +30,10 @@ export class AuthService {
   async signIn(res: Response, signInDto: SignInDto) {
     const { email, password } = signInDto;
 
-    const { password: encodedPassword, ...rest } = await this.userService.getUser(email);
+    const user = await this.userService.getUser(email);
+    if (!user) throw new UserGetFailedException();
 
+    const { password: encodedPassword, ...rest } = user;
     const isEqual = this.tokenService.isEquals(password, encodedPassword);
     if (!isEqual) throw new PasswordMatchFailedException();
 

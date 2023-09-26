@@ -2,6 +2,7 @@ import { Controller, Get, Req } from '@nestjs/common';
 
 import { LocalsRequest } from '@/interceptors/cookie.interceptor';
 
+import { UserGetFailedException } from '../../exceptions/user.exception';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -11,7 +12,10 @@ export class UserController {
   @Get()
   async getUser(@Req() req: LocalsRequest) {
     const { email } = req.decoded;
-    const { password: _, ...rest } = await this.userService.getUser(email);
+    const user = await this.userService.getUser(email);
+    if (!user) throw new UserGetFailedException();
+
+    const { password: _, ...rest } = user;
 
     return rest;
   }
