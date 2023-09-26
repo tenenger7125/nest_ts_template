@@ -30,7 +30,6 @@ export class AuthService {
     const isEqual = this.tokenService.isEquals(password, user.password);
     if (!isEqual) throw new Error('비밀번호가 다릅니다.');
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...userInfo } = user;
 
     this.tokenService.addAccessToken(res, userInfo);

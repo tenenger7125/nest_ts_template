@@ -11,7 +11,6 @@ export class UserController {
   @Get()
   async getUser(@Req() req: LocalsRequest) {
     const { email } = req.decoded;
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, ...rest } = await this.userService.getUser(email);
 
     return rest;

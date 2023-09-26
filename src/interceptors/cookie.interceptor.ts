@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
 
 import { Reflector } from '@nestjs/core';
