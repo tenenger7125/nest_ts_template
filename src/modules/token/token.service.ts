@@ -5,6 +5,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { Response } from 'express';
 
+import { JWTInvalidSignatureException } from '@/exceptions/token.exception';
+
 import { TokenInformationDto } from './token.dto';
 
 @Injectable()
@@ -46,20 +48,6 @@ export class TokenService {
     return +exp.toString().padEnd(now.toString().length, '0') < now;
   }
 
-  decoding(key: 'access' | 'refresh', value: string) {
-    const upperKey = key.toUpperCase() as Uppercase<typeof key>;
-
-    try {
-      const decoded = this.jwtService.verify<TokenInformationDto>(value, {
-        secret: this[`${upperKey}_TOKEN_CONFIG`].SECRET,
-      });
-
-      return decoded;
-    } catch (err) {
-      throw new Error('인증된 서명이 아닙니다.');
-    }
-  }
-
   accessTokenDecoding(accessToken: string) {
     try {
       const decoded = this.jwtService.verify<TokenInformationDto>(accessToken, {
@@ -68,9 +56,10 @@ export class TokenService {
 
       return decoded;
     } catch (err) {
-      throw new Error('인증된 서명이 아닙니다.');
+      throw new JWTInvalidSignatureException();
     }
   }
+
   refreshTokenDecoding(refreshToken: string) {
     try {
       const decoded = this.jwtService.verify<TokenInformationDto>(refreshToken, {
@@ -79,14 +68,14 @@ export class TokenService {
 
       return decoded;
     } catch (err) {
-      throw new Error('인증된 서명이 아닙니다.');
+      throw new JWTInvalidSignatureException();
     }
   }
 
   validateAccessToken(accessToken: string) {
     if (!accessToken) return false;
 
-    const { exp } = this.decoding('access', accessToken);
+    const { exp } = this.accessTokenDecoding(accessToken);
     if (this.isExpire(exp)) return false;
 
     return true;
@@ -95,7 +84,7 @@ export class TokenService {
   validateRefreshToken(refreshToken: string) {
     if (!refreshToken) return false;
 
-    const { exp } = this.decoding('refresh', refreshToken);
+    const { exp } = this.refreshTokenDecoding(refreshToken);
     if (this.isExpire(exp)) return false;
 
     return true;

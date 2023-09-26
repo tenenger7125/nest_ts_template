@@ -15,4 +15,19 @@ export class UserController {
 
     return rest;
   }
+
+  @Get('details')
+  async getUserDetails(@Req() req: LocalsRequest) {
+    const { email } = req.decoded;
+    const { password: _, ...rest } = await this.userService.getUserDetails(email);
+
+    return rest;
+  }
+
+  @Get('all')
+  async getUsers() {
+    const users = await this.userService.getUsers();
+
+    return users.map(({ password: _, ...rest }) => rest);
+  }
 }

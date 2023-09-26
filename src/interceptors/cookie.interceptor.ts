@@ -13,6 +13,9 @@ export interface LocalsRequest extends Request {
   decoded: TokenInformationDto;
 }
 
+const excludeAutoSavedDecodedData = (decoded: object) =>
+  Object.fromEntries(Object.entries(decoded).filter(([key]) => !['exp', 'iat'].includes(key)));
+
 @Injectable()
 export class CookieInterceptor implements NestInterceptor {
   constructor(
@@ -21,24 +24,22 @@ export class CookieInterceptor implements NestInterceptor {
   ) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const role = this.reflector.get<string>(META_DATA_KEY.ROLE, context.getHandler());
+    if (role?.includes('public')) return next.handle();
+
     const res = context.switchToHttp().getResponse<Response>();
     const req = context.switchToHttp().getRequest<LocalsRequest>();
     const { accessToken = '', refreshToken = '' } = req.cookies;
-
-    const role = this.reflector.get<string>(META_DATA_KEY.ROLE, context.getHandler());
-
-    if (role?.includes('public')) return next.handle();
 
     const decoded = accessToken
       ? this.tokenService.accessTokenDecoding(accessToken)
       : this.tokenService.refreshTokenDecoding(refreshToken);
 
-    const value = Object.fromEntries(Object.entries(decoded).filter(([key]) => !['exp', 'iat'].includes(key)));
+    const value = excludeAutoSavedDecodedData(decoded);
 
     this.tokenService.addAccessToken(res, value);
     this.tokenService.addRefreshToken(res, value);
 
-    // this.myService를 사용하여 로직을 처리할 수 있음
     req.decoded = decoded;
     return next.handle();
   }
