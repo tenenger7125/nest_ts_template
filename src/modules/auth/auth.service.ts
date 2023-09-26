@@ -11,6 +11,7 @@ import {
   UserGetFailedException,
 } from '@/exceptions/user.exception';
 
+import { Public } from '../../decorators/role.decorator';
 import { SignInDto, SignUpDto, TokenDto } from './auth.dto';
 
 @Injectable()
@@ -43,6 +44,7 @@ export class AuthService {
     return rest;
   }
 
+  @Public()
   async signUp(signUpDto: SignUpDto) {
     const { email, password } = signUpDto;
 
