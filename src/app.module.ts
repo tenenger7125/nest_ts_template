@@ -4,6 +4,7 @@ import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 
 import { AuthModule } from '@/modules/auth/auth.module';
 import { DatabaseModule } from '@/modules/database/database.module';
+import { LogModule } from '@/modules/log/log.module';
 import { MoviesModule } from '@/modules/movies/movies.module';
 import { TokenModule } from '@/modules/token/token.module';
 import { LoggerMiddleware } from '@/middleware/logger.middleware';
@@ -15,7 +16,7 @@ import { CookieInterceptor } from '@/interceptors/cookie.interceptor';
 import { ConfigModule } from '@/config/config.module';
 
 @Module({
-  imports: [ConfigModule, DatabaseModule, AuthModule, TokenModule, MoviesModule],
+  imports: [ConfigModule, DatabaseModule, AuthModule, TokenModule, MoviesModule, LogModule],
   controllers: [AppController],
   providers: [
     AppService,

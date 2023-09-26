@@ -1,5 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import * as cookieParser from 'cookie-parser';
+import * as useragent from 'express-useragent';
 
 import { ValidationPipe } from '@/pipes/validation.pipe';
 import { HttpExceptionFilter } from '@/filters/httpExceptionFilter.filter';
@@ -10,6 +11,7 @@ const bootstrap = async () => {
   const app = await NestFactory.create(AppModule);
 
   app.use(cookieParser());
+  app.use(useragent.express());
 
   app.useGlobalPipes(
     new ValidationPipe({
