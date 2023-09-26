@@ -8,6 +8,14 @@ module.exports = {
     'prefer-arrow-callback': 'error',
     'func-style': ['error', 'expression'],
     'object-shorthand': 'error',
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      {
+        argsIgnorePattern: '^_',
+        varsIgnorePattern: '^_',
+        caughtErrorsIgnorePattern: '^_',
+      },
+    ],
     'no-restricted-syntax': [
       'error',
       {

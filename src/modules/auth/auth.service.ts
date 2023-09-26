@@ -5,6 +5,13 @@ import { Response } from 'express';
 import { TokenService } from '@/modules/token/token.service';
 import { UserService } from '@/modules/user/user.service';
 
+import {
+  DuplicatedUserFoundException,
+  PasswordMatchFailedException,
+  UserGetFailedException,
+} from '@/exceptions/user.exception';
+
+import { Public } from '../../decorators/role.decorator';
 import { SignInDto, SignUpDto, TokenDto } from './auth.dto';
 
 @Injectable()
@@ -25,25 +32,24 @@ export class AuthService {
     const { email, password } = signInDto;
 
     const user = await this.userService.getUser(email);
-    if (!user) throw new Error('등록되지 않은 사용자입니다.');
+    if (!user) throw new UserGetFailedException();
 
-    const isEqual = this.tokenService.isEquals(password, user.password);
-    if (!isEqual) throw new Error('비밀번호가 다릅니다.');
+    const { password: encodedPassword, ...rest } = user;
+    const isEqual = this.tokenService.isEquals(password, encodedPassword);
+    if (!isEqual) throw new PasswordMatchFailedException();
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { password: _, ...userInfo } = user;
+    this.tokenService.addAccessToken(res, rest);
+    this.tokenService.addRefreshToken(res, rest);
 
-    this.tokenService.addAccessToken(res, userInfo);
-    this.tokenService.addRefreshToken(res, userInfo);
-
-    return userInfo;
+    return rest;
   }
 
+  @Public()
   async signUp(signUpDto: SignUpDto) {
     const { email, password } = signUpDto;
 
     const user = await this.userService.getUser(email);
-    if (user) throw new Error('이미 존재하는 이메일입니다.');
+    if (user) throw new DuplicatedUserFoundException();
 
     const newUser = { ...signUpDto, password: this.tokenService.encoding(password) };
     await this.userService.addUser(newUser);

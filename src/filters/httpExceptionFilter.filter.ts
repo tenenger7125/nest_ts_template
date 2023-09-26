@@ -10,8 +10,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const req = ctx.getRequest<Request>();
     const status = exception.getStatus();
 
-    //* 예외가 발생하면, DB에 로그를 쌓고 싶다..!
-
     res.status(status).json({
       message: exception.message,
       error: exception.name,
