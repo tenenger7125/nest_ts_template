@@ -1,9 +1,8 @@
 import { Injectable, Logger, NestMiddleware } from '@nestjs/common';
 
-import { Response, NextFunction } from 'express';
+import { Response, Request, NextFunction } from 'express';
 
 import { LogService } from '@/modules/log/log.service';
-import { LocalsRequest } from '@/interceptors/cookie.interceptor';
 
 @Injectable()
 export class LoggerMiddleware implements NestMiddleware {
@@ -11,7 +10,7 @@ export class LoggerMiddleware implements NestMiddleware {
 
   constructor(private readonly logService: LogService) {}
 
-  use(req: LocalsRequest, res: Response, next: NextFunction) {
+  use(req: Request, res: Response, next: NextFunction) {
     const {
       headers: { host, 'user-agent': userAgent },
       method,

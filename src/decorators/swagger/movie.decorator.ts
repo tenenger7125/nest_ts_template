@@ -1,6 +1,6 @@
 import { applyDecorators } from '@nestjs/common';
 
-import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiCookieAuth, ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 //* @ApiTags(): 컨트롤러 클래스 또는 메서드에 태그를 추가하여 API 엔드포인트를 그룹화하고 API 문서를 구조화할 수 있습니다.
 //* @ApiOperation(): 이 데코레이터는 컨트롤러 클래스 또는 각각의 API 엔드포인트 메서드에 적용됩니다. 이를 통해 API 엔드포인트에 대한 설명, 요청 및 응답 형식, 태그 등을 정의할 수 있습니다.
@@ -12,6 +12,10 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 //^ @ApiOperation(): 이 데코레이터 역시 주로 컨트롤러 메서드에 작성합니다. API 엔드포인트에 대한 설명과 요청 및 응답 형식을 정의하기 때문에 해당 메서드와 관련이 있습니다.
 //^ @ApiTags(): 주로 컨트롤러 클래스에 작성합니다. 이 데코레이터를 사용하여 여러 API 엔드포인트를 그룹화하고 API 문서를 구조화할 수 있습니다. 컨트롤러 클래스 자체에 태그를 부여하여 API 엔드포인트를 논리적으로 구분할 수 있습니다.
 //^ @ApiBearerAuth(): 주로 컨트롤러 메서드 또는 클래스에 작성합니다. 해당 엔드포인트나 클래스가 JWT 또는 Bearer 토큰 인증을 필요로 할 때 사용합니다. 이 데코레이터를 사용하여 해당 위치에서만 인증이 필요하다는 것을 명시합니다.
+
+export const ApiMovieSetting = () => {
+  return applyDecorators(ApiTags('영화 API'), ApiCookieAuth('accessToken'));
+};
 
 export const ApiGetMovies = () => {
   return applyDecorators(
@@ -34,9 +38,10 @@ export const ApiGetMovies = () => {
 export const ApiGetMovieById = () => {
   return applyDecorators(
     ApiOperation({
-      summary: 'id에 해당되는 영화 얻기',
+      summary: '특정 영화 얻기',
       description: '영화 id에 해당되는 영화를 얻습니다.',
     }),
+    ApiParam({ name: 'id', example: 1 }),
     ApiResponse({
       description: '성공',
       schema: {
@@ -55,7 +60,39 @@ export const ApiAddMovie = () => {
     ApiResponse({
       description: '성공',
       schema: {
-        example: '',
+        example: { id: 1, title: '바람과 함께 사라지다.', email: 'test@test.com' },
+      },
+    }),
+  );
+};
+
+export const ApiUpdateMovie = () => {
+  return applyDecorators(
+    ApiOperation({
+      summary: '영화 수정하기',
+      description: '전달받은 영화 데이터(일부 또는 전체)로 데이터를 수정한다.',
+    }),
+    ApiParam({ name: 'id', example: 1 }),
+    ApiResponse({
+      description: '성공',
+      schema: {
+        example: { id: 1, title: '바람과 함께 사라지나?', email: 'test@test.com' },
+      },
+    }),
+  );
+};
+
+export const ApiDeleteMovie = () => {
+  return applyDecorators(
+    ApiOperation({
+      summary: '영화 삭제하기',
+      description: '영화 id와 일치하는 영화를 삭제한다.',
+    }),
+    ApiParam({ name: 'id', example: 1 }),
+    ApiResponse({
+      description: '성공',
+      schema: {
+        example: { id: 1, title: '바람과 함께 사라지다.', email: 'test@test.com' },
       },
     }),
   );

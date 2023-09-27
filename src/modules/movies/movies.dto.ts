@@ -1,4 +1,3 @@
-import { PartialType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNumber, IsString } from 'class-validator';
 
@@ -22,8 +21,12 @@ export class GetMovieDto {
 
 export class AddMovieDto {
   @IsString()
-  @ApiProperty({ example: 1, description: '영화 id', required: true })
+  @ApiProperty({ example: '바람과함께 사라지다', description: '영화 제목', required: true })
   title: string;
 }
 
-export class UpdateMovieDto extends PartialType(AddMovieDto) {}
+export class UpdateMovieDto {
+  @IsString()
+  @ApiProperty({ example: '바람과함께 사라지나?', description: '영화 제목', required: true })
+  title: string;
+}

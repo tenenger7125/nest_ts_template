@@ -4,14 +4,9 @@ import { Reflector } from '@nestjs/core';
 import { Response, Request } from 'express';
 import { Observable } from 'rxjs';
 
-import { TokenInformationDto } from '@/modules/token/token.dto';
 import { TokenService } from '@/modules/token/token.service';
 
 import { META_DATA_KEY } from '@/constants/metaDataKeys';
-
-export interface LocalsRequest extends Request {
-  decoded: TokenInformationDto;
-}
 
 const excludeAutoSavedDecodedData = (decoded: object) =>
   Object.fromEntries(Object.entries(decoded).filter(([key]) => !['exp', 'iat'].includes(key)));
@@ -28,7 +23,7 @@ export class CookieInterceptor implements NestInterceptor {
     if (role?.includes('public')) return next.handle();
 
     const res = context.switchToHttp().getResponse<Response>();
-    const req = context.switchToHttp().getRequest<LocalsRequest>();
+    const req = context.switchToHttp().getRequest<Request>();
     const { accessToken = '', refreshToken = '' } = req.cookies;
 
     const decoded = accessToken
