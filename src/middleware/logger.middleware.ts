@@ -11,10 +11,6 @@ export class LoggerMiddleware implements NestMiddleware {
 
   constructor(private readonly logService: LogService) {}
 
-  //! 지금은 에러를 미들웨어에서 못받는다.
-  //^ 미들웨어에서는 console에 로그를 표현해주는 로직을 구현
-  //^ 인터셉터에서는 db에 로그를 저장해주기 위한 로직을 구현(에러메시지까지 포함하려면 꼭 그래야만 한다.)
-
   use(req: LocalsRequest, res: Response, next: NextFunction) {
     const {
       headers: { host, 'user-agent': userAgent },
@@ -22,11 +18,11 @@ export class LoggerMiddleware implements NestMiddleware {
       ip,
     } = req;
     const now = new Date();
-    const originSend = res.send;
     const { browser, isMobile, os } = req.useragent ?? { browser: 'unknown', isMobile: 'unknown', os: 'unknown' };
     const device = isMobile ? 'mobile' : isMobile === false ? 'pc' : 'unknown';
+    const originSend = res.send;
 
-    let responseBody = '';
+    let responseBody: { [index: string]: unknown };
     res.send = function (body: any) {
       responseBody = body;
       return originSend.call(this, body);
@@ -50,10 +46,9 @@ export class LoggerMiddleware implements NestMiddleware {
         requestHeader: JSON.stringify(headers),
         requestBody,
         statusCode,
-        responseBody,
+        responseBody: JSON.stringify(responseBody),
         elapsedTime,
         isSuccess,
-        errorMessage: '',
         device,
         browser,
         os,

@@ -47,9 +47,6 @@ export class Log {
   @Column({ name: 'status_code' })
   statusCode: number;
 
-  @Column({ name: 'error_message' })
-  errorMessage: string;
-
   @Column({ name: 'note' })
   note: string;
 }

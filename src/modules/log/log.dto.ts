@@ -44,8 +44,5 @@ export class LogDto {
   statusCode: number;
 
   @IsString()
-  errorMessage: string;
-
-  @IsString()
   note: string;
 }
