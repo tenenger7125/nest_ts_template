@@ -5,11 +5,15 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { User } from '@/modules/user/user.entity';
+import {
+  MovieAddFailedException,
+  MovieDeleteFailedException,
+  MovieGetFailedException,
+  MovieUpdateFailedException,
+} from '@/exceptions/movie.exception';
 
+import { UpdateMovieDto, AddMovieDto } from './movies.dto';
 import { Movie } from './movies.entity';
-
-// const generateMovieId = (movies: Movie[]) => Math.max(...movies.map((movie) => movie.id), 0) + 1;
 
 @Injectable()
 export class MoviesService {
@@ -17,6 +21,7 @@ export class MoviesService {
 
   async getMovies() {
     const movies = await this.movieRepository.find({ where: { email: 'test@test.com' }, relations: { user: true } });
+    //^ 아래 주석 코드는 movies와 전혀 상관 없는 코드. 다만 entity 정보를 얻기 위한 코드이다.
     // const movies = await this.movieRepository.find({ where: { email: 'test@test.com' }, relations: { user: true } });
     // const test1 = await this.movieRepository
     //   .createQueryBuilder('movie')
@@ -28,41 +33,42 @@ export class MoviesService {
     return movies;
   }
 
-  // getMovie(movieId: number): Movie | undefined {
-  //   const movie = this.movies.find((movie) => movie.id === movieId);
-  //   if (!movie) throw new MovieGetFailedException();
+  async getMovie(id: number) {
+    const movie = await this.movieRepository.findOne({ where: { id } });
+    if (!movie) throw new MovieGetFailedException();
 
-  //   return movie;
-  // }
+    return movie;
+  }
 
-  // addMovie(movieData: addMovieDto): Movie {
-  //   const newMovie = { id: generateMovieId(this.movies), ...movieData };
-  //   try {
-  //     this.movies = [...this.movies, newMovie];
-  //   } catch (err) {
-  //     throw new MovieAddFailedException();
-  //   }
+  async addMovie(email: string, addMovieDto: AddMovieDto) {
+    try {
+      const addedMovie = await this.movieRepository.save({ ...addMovieDto, email });
 
-  //   return newMovie;
-  // }
+      return addedMovie;
+    } catch (err) {
+      throw new MovieAddFailedException();
+    }
+  }
 
-  // updateMovie(movieId: number, movieData: UpdateMovieDto): Movie | undefined {
-  //   let updatedMovie;
-  //   this.movies = this.movies.map((movie) =>
-  //     movie.id === movieId ? (updatedMovie = { ...movie, ...movieData }) : movie,
-  //   );
+  async updateMovie(id: number, updateMovieDto: UpdateMovieDto) {
+    try {
+      await this.movieRepository.update(id, updateMovieDto);
+      const updatedMovie = await this.getMovie(id);
 
-  //   if (!updatedMovie) throw new MovieUpdateFailedException();
+      return updatedMovie;
+    } catch (err) {
+      throw new MovieUpdateFailedException();
+    }
+  }
 
-  //   return updatedMovie;
-  // }
+  async deleteMovie(id: number) {
+    try {
+      const deletedMovie = await this.getMovie(id);
+      await this.movieRepository.delete(id);
 
-  // deleteMovie(movieId: number): Movie | undefined {
-  //   let deletedMovie;
-  //   this.movies = this.movies.filter((movie) => (movie.id === movieId ? (deletedMovie = movie) : false));
-
-  //   if (!deletedMovie) throw new MovieDeleteFailedException();
-
-  //   return deletedMovie;
-  // }
+      return deletedMovie;
+    } catch (err) {
+      throw new MovieDeleteFailedException();
+    }
+  }
 }

@@ -41,10 +41,9 @@ export class UserService {
 
   async addUser(addUserDto: AddUserDto) {
     try {
-      const test = await this.userRepository.insert(addUserDto);
-      console.log(test);
+      const addedUser = await this.userRepository.save(addUserDto);
 
-      return addUserDto;
+      return addedUser;
     } catch (err) {
       throw new UserAddFailedException();
     }

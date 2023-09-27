@@ -1,34 +1,48 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param, Post, Body, Req, Put, Patch, Delete } from '@nestjs/common';
+
+import { ApiTags, ApiCookieAuth } from '@nestjs/swagger';
+
+import { LocalsRequest } from '@/interceptors/cookie.interceptor';
+
+import { ApiAddMovie, ApiGetMovieById, ApiGetMovies } from '@/decorators/swagger/movie.decorator';
 
 import { MoviesService } from './movies.service';
+import { UpdateMovieDto, AddMovieDto } from './movies.dto';
 
 @Controller('movie')
+@ApiTags('영화 API (로그인 필수)')
+@ApiCookieAuth('accessToken')
 export class MoviesController {
   constructor(private readonly movieService: MoviesService) {}
 
   @Get()
+  @ApiGetMovies()
   async getMovies() {
     return await this.movieService.getMovies();
   }
 
-  // @Get(':id')
-  // getMovie(@Param('id') movieId: number) {
-  //   return this.movieService.getMovie(movieId);
-  // }
+  @Get(':id')
+  @ApiGetMovieById()
+  getMovie(@Param('id') id: number) {
+    return this.movieService.getMovie(id);
+  }
 
-  // @Post()
-  // addMovie(@Body() movieData: addMovieDto) {
-  //   return this.movieService.addMovie(movieData);
-  // }
+  @Post()
+  @ApiAddMovie()
+  async addMovie(@Req() req: LocalsRequest, @Body() addMovieDto: AddMovieDto) {
+    const { email } = req.decoded;
 
-  // @Put(':id')
-  // @Patch(':id')
-  // updateMovie(@Param('id') movieId: number, @Body() movieData: UpdateMovieDto) {
-  //   return this.movieService.updateMovie(movieId, movieData);
-  // }
+    return await this.movieService.addMovie(email, addMovieDto);
+  }
 
-  // @Delete(':id')
-  // deleteMovie(@Param('id') movieId: number) {
-  //   return this.movieService.deleteMovie(movieId);
-  // }
+  @Put(':id')
+  @Patch(':id')
+  async updateMovie(@Param('id') id: number, @Body() updateMovieDto: UpdateMovieDto) {
+    return await this.movieService.updateMovie(id, updateMovieDto);
+  }
+
+  @Delete(':id')
+  async deleteMovie(@Param('id') id: number) {
+    return await this.movieService.deleteMovie(id);
+  }
 }
