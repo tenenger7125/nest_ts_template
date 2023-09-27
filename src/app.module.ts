@@ -8,8 +8,6 @@ import { LogModule } from '@/modules/log/log.module';
 import { MoviesModule } from '@/modules/movies/movies.module';
 import { TokenModule } from '@/modules/token/token.module';
 import { LoggerMiddleware } from '@/middleware/logger.middleware';
-import { AppController } from '@/controllers/app.controller';
-import { AppService } from '@/services/app.service';
 import { AuthGuard } from '@/guards/auth.guard';
 import { CookieInterceptor } from '@/interceptors/cookie.interceptor';
 
@@ -17,9 +15,7 @@ import { ConfigModule } from '@/config/config.module';
 
 @Module({
   imports: [ConfigModule, DatabaseModule, AuthModule, TokenModule, MoviesModule, LogModule],
-  controllers: [AppController],
   providers: [
-    AppService,
     { provide: APP_GUARD, useClass: AuthGuard },
     { provide: APP_INTERCEPTOR, useClass: CookieInterceptor },
   ],
