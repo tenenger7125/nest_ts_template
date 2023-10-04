@@ -38,6 +38,9 @@ export class LogDto {
   isSuccess: boolean;
 
   @IsString()
+  message: string;
+
+  @IsString()
   elapsedTime: number;
 
   @IsString()

@@ -41,6 +41,9 @@ export class Log {
   @Column({ name: 'is_success' })
   isSuccess: boolean;
 
+  @Column()
+  message: string;
+
   @Column({ name: 'elapsed_time' })
   elapsedTime: number;
 

@@ -21,7 +21,7 @@ export class LoggerMiddleware implements NestMiddleware {
     const device = isMobile ? 'mobile' : isMobile === false ? 'pc' : 'unknown';
     const originSend = res.send;
 
-    let responseBody: { [index: string]: unknown };
+    let responseBody: string;
     res.send = function (body: any) {
       responseBody = body;
       return originSend.call(this, body);
@@ -45,9 +45,10 @@ export class LoggerMiddleware implements NestMiddleware {
         requestHeader: JSON.stringify(headers),
         requestBody,
         statusCode,
-        responseBody: JSON.stringify(responseBody),
+        responseBody,
         elapsedTime,
         isSuccess,
+        message: (!isSuccess && JSON.parse(responseBody).message) || '',
         device,
         browser,
         os,
